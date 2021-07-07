@@ -1,0 +1,55 @@
+﻿@model IEnumerable<DevTest.Models.DataCovid>
+
+@using GridMvc.Html
+
+@{
+    ViewBag.Title = "Provincia";
+}
+
+<div class="jumbotron">
+    <h1>Covid-19</h1>
+    <p class="lead">Top 10 de provincias con más casos</p>
+</div>
+
+<div class="row">
+    <div class="col-md-3">
+    </div>
+    <div class="col-md-3">
+        <button type="button" class="btn btn-default btn-sm" id="btXML" style="width:100px"><i class="fas fa-check"></i> XML </button>
+    </div>
+    <div class="col-md-3">
+        <button type="button" class="btn btn-default btn-sm" id="btJson" style="width:100px"><i class="fas fa-check"></i>  JSON </button>
+    </div>
+    <div class="col-md-3">
+        <button type="button" class="btn btn-default btn-sm" id="btCSV" style="width:100px"><i class="fas fa-check"></i>  CSV </button>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12 text-center">
+
+        @Html.Grid(Model).Named("provincias").Columns(columns =>
+                    {
+                        columns.Add(c => c.Id).Titled("Provincias");
+                        columns.Add(c => c.NoCasos).Titled("No. Casos");
+                        columns.Add(c => c.NoMuertes).Titled("No. Muertes");
+                    }).Sortable(true).Selectable(true)
+    </div>
+
+</div>
+
+
+<script type="text/javascript">
+
+     $('#btXML').click(function () {
+         window.location = "/Provincia/ExpotarXML";
+     });
+
+     $('#btJson').click(function () {
+         window.location = "/Provincia/ExportarJson";
+     });
+
+    $('#btCSV').click(function () {
+        window.location = "/Provincia/ExportarCSV";
+    });
+</script>

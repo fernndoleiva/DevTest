@@ -1,0 +1,92 @@
+﻿@model IEnumerable<DevTest.Models.DataCovid>
+@using GridMvc.Html
+
+@{
+    ViewBag.Title = "DevTest";
+} 
+
+<div class="jumbotron">
+    <h1>Covid-19</h1>
+    <p class="lead">Top 10 de regiones con más casos</p>
+</div>
+ 
+<div class="row">
+    <div class="col-md-3">
+        <button type="button" class="btn btn-default btn-sm" id="btReporte" style="width:100px"><i class="fas fa-check"></i> Report </button>
+    </div>
+    <div class="col-md-3">
+        <button type="button" class="btn btn-default btn-sm" id="btXML" style="width:100px"><i class="fas fa-check"></i> XML </button>
+    </div>
+    <div class="col-md-3">
+        <button type="button" class="btn btn-default btn-sm" id="btJson" style="width:100px"><i class="fas fa-check"></i>  JSON </button>       
+    </div>
+    <div class="col-md-3">
+        <button type="button" class="btn btn-default btn-sm" id="btCSV" style="width:100px"><i class="fas fa-check"></i>  CSV </button>
+    </div>
+</div>
+ 
+   
+ 
+
+<div class="row">
+    <div class="col-md-12 text-center"> 
+         
+            @Html.Grid(Model).Named("regiones").Columns(columns =>
+       {
+           columns.Add()
+               .Encoded(false)
+               .Sanitized(false)
+               .SetWidth(10)
+               .RenderValueAs(o => new HtmlString
+               (
+               "<input id='hiddenValue' type='hidden' class='check' value='" + o.Id + "'/>" +
+               "<input type='checkbox' class='check' value=" + o.Id +" name='checkregion' />"
+               ));
+           columns.Add(c => c.Id).Titled("REGION");
+           columns.Add(c => c.NoCasos).Titled("No. Casos");
+           columns.Add(c => c.NoMuertes).Titled("No. Muertes");
+       }).Sortable(true).Selectable(true)        
+    </div>
+</div>
+
+ <script type="text/javascript">
+     $('#btReporte').click(function () {
+         // OBTENIENDO TODAS LAS FILAS
+         var items = $(".grid-mvc").find(".grid-table > tbody").children();
+         // RECORIENDO LAS FILAS VALIDANDO CHECKBOX
+         $.each(items, function (i, row) {
+             if ($(row).find('.check').is(':checked')) {             
+                 window.location.href = '/Provincia/Index/' + $(row).find('#hiddenValue').val();
+                           
+             }
+         })
+     })
+
+
+     // EVENTO PARA CLICK EN CHECKBOX
+     $("input:checkbox").on('click', function () {          
+         var $box = $(this);
+         if ($box.is(":checked")) {
+             // AGRUPANDO CHECKBOX POR NOMBRE DE GRUPO
+             var group = "input:checkbox[name='" + $box.attr("name") + "']";
+             // QUITANDO EL SELECT EN LOS DEMÁS 
+             $(group).prop("checked", false);
+             $box.prop("checked", true);
+         } else {
+             $box.prop("checked", false);
+         }
+     });
+      
+
+     $('#btXML').click(function () {
+         window.location = "/Home/ExpotarXML";          
+     });
+
+     $('#btJson').click(function () {
+         window.location = "/Home/ExportarJson";
+     });
+
+     $('#btCSV').click(function () {
+         window.location = "/Home/ExportarCSV";
+     });
+ </script>
